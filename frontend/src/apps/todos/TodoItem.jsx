@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { CheckTodo } from './CheckTodo';
 
-export function TodoItem({ todo }) {
-  return (
-    <li className={todo.completed ? 'completed' : ''}>
-      {todo.completed ? '✅' : '⬜'} {todo.title}
-    </li>
-  );
+export class TodoItem extends Component {
+  handleToggle = () => {
+    const { todo, onToggle } = this.props;
+    if (onToggle) {
+      onToggle(todo);
+    }
+  };
+
+  render() {
+    const { todo } = this.props;
+
+    return (
+      <li className={todo.completed ? 'completed' : ''}>
+        <CheckTodo completed={todo.completed} onChange={this.handleToggle} />
+        {' '}{todo.title}
+      </li>
+    );
+  }
 }

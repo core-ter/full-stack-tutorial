@@ -1,20 +1,26 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { TodoItem } from './TodoItem';
 
-export function TodoList({ todos, loading }) {
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+export class TodoList extends Component {
+  render() {
+    const { todos, loading } = this.props;
 
-  if (todos.length === 0) {
-    return <p>No todos yet.</p>;
-  }
+    if (loading) {
+      return <p>Loading...</p>;
+    }
 
-  return (
-    <ul className="todo-list">
-      {todos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} />
-      ))}
-    </ul>
-  );
+    if (todos.length === 0) {
+      return <p>No todos yet.</p>;
+    }
+
+    const { onTodoToggle } = this.props;
+
+    return (
+      <ul className="todo-list">
+        {todos.map((todo) => (
+          <TodoItem key={todo.id} todo={todo} onToggle={onTodoToggle} />
+        ))}
+      </ul>
+    );
+  }
 }

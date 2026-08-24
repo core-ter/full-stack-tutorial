@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { AddTodoForm } from './AddTodoForm';
 import { TodoList } from './TodoList';
+import { todoApi } from './api/todoApi';
 import './todos.css';
 
 export class TodosApp extends Component {
@@ -20,39 +21,31 @@ export class TodosApp extends Component {
   loadTodos = () => {
     this.setState({ loading: true, error: null });
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/todos/', true);
-    xhr.setRequestHeader('Accept', 'application/json');
-
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState !== XMLHttpRequest.DONE) return;
-
-      if (xhr.status >= 200 && xhr.status < 300) {
-        try {
-          const todos = JSON.parse(xhr.responseText);
-          this.setState({ todos, loading: false });
-        } catch (parseError) {
-          this.setState({ error: parseError.message, loading: false });
-        }
-      } else {
-        this.setState({
-          error: `HTTP error! status: ${xhr.status}`,
-          loading: false,
-        });
-      }
-    };
-
-    xhr.onerror = () => {
-      this.setState({ error: 'Network error', loading: false });
-    };
-
-    xhr.send();
+    todoApi
+      .getAll()
+      .then((todos) => this.setState({ todos, loading: false }))
+      .catch((error) => this.setState({ error, loading: false }));
   };
 
   handleTodoAdded = (newTodo) => {
     this.setState((prevState) => ({
       todos: [...prevState.todos, newTodo],
     }));
+  };
+
+  handleTodoToggle = (todo) => {
+    const updatedFields = { completed: !todo.completed };
+
+    todoApi
+      .update(todo.id, updatedFields)
+      .then((savedTodo) => {
+        this.setState((prevState) => ({
+          todos: prevState.todos.map((item) =>
+            item.id === savedTodo.id ? savedTodo : item
+          ),
+        }));
+      })
+      .catch((error) => this.setState({ error }));
   };
 
   render() {
@@ -63,7 +56,7 @@ export class TodosApp extends Component {
         <h2>Todos</h2>
         <AddTodoForm onTodoAdded={this.handleTodoAdded} />
         {error && <p className="error">Error: {error}</p>}
-        <TodoList todos={todos} loading={loading} />
+        <TodoList todos={todos} loading={loading} onTodoToggle={this.handleTodoToggle} />
       </section>
     );
   }

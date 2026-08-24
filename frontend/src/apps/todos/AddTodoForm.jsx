@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { todoApi } from './api/todoApi';
 
 export class AddTodoForm extends Component {
   constructor(props) {
@@ -22,35 +23,13 @@ export class AddTodoForm extends Component {
 
     this.setState({ saving: true, error: null });
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/todos/', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Accept', 'application/json');
-
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState !== XMLHttpRequest.DONE) return;
-
-      if (xhr.status >= 200 && xhr.status < 300) {
-        try {
-          const newTodo = JSON.parse(xhr.responseText);
-          this.props.onTodoAdded(newTodo);
-          this.setState({ title: '', saving: false });
-        } catch (parseError) {
-          this.setState({ error: parseError.message, saving: false });
-        }
-      } else {
-        this.setState({
-          error: `HTTP error! status: ${xhr.status}`,
-          saving: false,
-        });
-      }
-    };
-
-    xhr.onerror = () => {
-      this.setState({ error: 'Network error', saving: false });
-    };
-
-    xhr.send(JSON.stringify({ title, completed: false }));
+    todoApi
+      .create({ title, completed: false })
+      .then((newTodo) => {
+        this.props.onTodoAdded(newTodo);
+        this.setState({ title: '', saving: false });
+      })
+      .catch((error) => this.setState({ error, saving: false }));
   };
 
   render() {
