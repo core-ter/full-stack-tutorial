@@ -3,7 +3,7 @@ import { NoteItem } from './NoteItem';
 
 export class NoteList extends Component {
   render() {
-    const { notes, loading } = this.props;
+    const { notes, loading, onNoteDeleted } = this.props;
 
     if (loading) {
       return <p>Loading...</p>;
@@ -16,7 +16,7 @@ export class NoteList extends Component {
     return (
       <ul className="note-list">
         {notes.map((note) => (
-          <NoteItem key={note.id} note={note} />
+          <NoteItem key={note.id} note={note} onDeleted={onNoteDeleted} />
         ))}
       </ul>
     );

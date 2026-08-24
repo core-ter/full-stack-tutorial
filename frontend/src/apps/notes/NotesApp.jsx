@@ -41,6 +41,12 @@ export class NotesApp extends Component {
     }));
   }
 
+  handleNoteDeleted = (deletedId) => {
+    this.setState((prevState) => ({
+      notes: prevState.notes.filter((note) => note.id !== deletedId),
+    }));
+  }
+
   render() {
     const { notes, categories, loading, error } = this.state;
 
@@ -50,7 +56,7 @@ export class NotesApp extends Component {
         {error && <div className="error">Error: {error}</div>}
         {loading && <div className="loading">Loading...</div>}
         <AddNoteForm categories={categories} onNoteAdded={this.handleNoteAdded} />
-        <NoteList notes={notes} loading={loading}/>
+        <NoteList notes={notes} loading={loading} onNoteDeleted={this.handleNoteDeleted} />
       </div>
     )
   }
