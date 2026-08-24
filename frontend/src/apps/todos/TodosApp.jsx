@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { AddTodoForm } from './AddTodoForm';
 import { TodoList } from './TodoList';
 import { todoApi } from './api/todoApi';
-import './todos.css';
+import { categoryApi } from './api/categoryApi';
+import './styles/todos.css';
 
 export class TodosApp extends Component {
   constructor(props) {
     super(props);
     this.state = {
       todos: [],
+      categories : [],
       loading: false,
       error: null,
     };
@@ -16,6 +18,7 @@ export class TodosApp extends Component {
 
   componentDidMount() {
     this.loadTodos();
+    this.loadCategories();
   }
 
   loadTodos = () => {
@@ -24,6 +27,15 @@ export class TodosApp extends Component {
     todoApi
       .getAll()
       .then((todos) => this.setState({ todos, loading: false }))
+      .catch((error) => this.setState({ error, loading: false }));
+  };
+
+  loadCategories = () => {
+    this.setState({ loading: true, error: null });
+
+    categoryApi
+      .getAll()
+      .then((categories) => this.setState({ categories, loading: false }))
       .catch((error) => this.setState({ error, loading: false }));
   };
 
@@ -49,12 +61,12 @@ export class TodosApp extends Component {
   };
 
   render() {
-    const { todos, loading, error } = this.state;
+    const { todos, categories, loading, error } = this.state;
 
     return (
       <section className="todos-app">
         <h2>Todos</h2>
-        <AddTodoForm onTodoAdded={this.handleTodoAdded} />
+        <AddTodoForm onTodoAdded={this.handleTodoAdded} categories={categories} />
         {error && <p className="error">Error: {error}</p>}
         <TodoList todos={todos} loading={loading} onTodoToggle={this.handleTodoToggle} />
       </section>

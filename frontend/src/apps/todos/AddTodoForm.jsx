@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { todoApi } from './api/todoApi';
+import { categoryApi } from './api/categoryApi';
 
 export class AddTodoForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       title: '',
+      categoryId: '',
       saving: false,
       error: null,
     };
   }
 
   handleChange = (event) => {
-    this.setState({ title: event.target.value });
+    this.setState({ [event.target.name]: event.target.value });
   };
 
   handleSubmit = (event) => {
@@ -23,28 +25,49 @@ export class AddTodoForm extends Component {
 
     this.setState({ saving: true, error: null });
 
+    const payload = {
+      title,
+      completed: false,
+      category: this.state.categoryId || null,
+    };
+
     todoApi
-      .create({ title, completed: false })
+      .create(payload)
       .then((newTodo) => {
         this.props.onTodoAdded(newTodo);
-        this.setState({ title: '', saving: false });
+        this.setState({ title: '', categoryId: '', saving: false });
       })
       .catch((error) => this.setState({ error, saving: false }));
   };
 
   render() {
-    const { title, saving, error } = this.state;
+    const { title, categoryId, saving, error } = this.state;
+    const { categories } = this.props;
 
     return (
       <form onSubmit={this.handleSubmit} className="todo-form">
         <input
           type="text"
+          name="title"
           value={title}
           onChange={this.handleChange}
           placeholder="Add a new todo..."
           disabled={saving}
           className="todo-input"
         />
+        <select
+          name="categoryId"
+          value={categoryId}
+          onChange={this.handleChange}
+          disabled={saving}
+        >
+          <option value="">Select a category</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
         <button type="submit" disabled={saving} className="todo-button">
           {saving ? 'Saving...' : 'Add'}
         </button>
