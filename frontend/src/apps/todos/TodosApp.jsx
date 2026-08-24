@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { AddTodoForm } from './AddTodoForm';
 import { TodoList } from './TodoList';
-import { todoApi } from './api/todoApi';
-import { categoryApi } from './api/categoryApi';
+import { todoApi } from './api/todoApi.jsx';
+import { categoryApi } from './api/categoryApi.jsx';
 import './styles/todos.css';
 
 export class TodosApp extends Component {

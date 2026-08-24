@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { TodosApp } from './apps/todos';
+import { NotesApp } from './apps/notes';
 
 class App extends Component {
   render() {
@@ -10,6 +11,7 @@ class App extends Component {
         </header>
         <main>
           <TodosApp />
+          <NotesApp />
         </main>
       </div>
     );

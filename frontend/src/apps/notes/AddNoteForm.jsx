@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { todoApi } from './api/todoApi.jsx';
+import { noteApi } from './api/noteApi.jsx';
 import { categoryApi } from './api/categoryApi.jsx';
 
-export class AddTodoForm extends Component {
+export class AddNoteForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       title: '',
+      content: '',
       categoryId: '',
       saving: false,
       error: null,
@@ -21,39 +22,49 @@ export class AddTodoForm extends Component {
     event.preventDefault();
 
     const title = this.state.title.trim();
+    const content = this.state.content.trim();
     if (!title) return;
 
     this.setState({ saving: true, error: null });
 
     const payload = {
       title,
-      completed: false,
+      content,
       category: this.state.categoryId || null,
     };
 
-    todoApi
+    noteApi
       .create(payload)
-      .then((newTodo) => {
-        this.props.onTodoAdded(newTodo);
-        this.setState({ title: '', categoryId: '', saving: false });
+      .then((newNote) => {
+        this.props.onNoteAdded(newNote);
+        this.setState({ title: '', content: '', categoryId: '', saving: false });
       })
       .catch((error) => this.setState({ error, saving: false }));
   };
 
   render() {
-    const { title, categoryId, saving, error } = this.state;
+    const { title, content, categoryId, saving, error } = this.state;
     const { categories } = this.props;
 
     return (
-      <form onSubmit={this.handleSubmit} className="todo-form">
+      <form onSubmit={this.handleSubmit} className="note-form">
         <input
           type="text"
           name="title"
           value={title}
           onChange={this.handleChange}
-          placeholder="Add a new todo..."
+          placeholder="Add a new note title..."
           disabled={saving}
-          className="todo-input"
+          className="note-input"
+        />
+        <textarea
+          name="content"
+          value={content}
+          onChange={this.handleChange}
+          placeholder="Add note content..."
+          disabled={saving}
+          className="note-textarea"
+          rows="3"
         />
         <select
           name="categoryId"
@@ -68,7 +79,7 @@ export class AddTodoForm extends Component {
             </option>
           ))}
         </select>
-        <button type="submit" disabled={saving} className="todo-button">
+        <button type="submit" disabled={saving} className="note-button">
           {saving ? 'Saving...' : 'Add'}
         </button>
         {error && <p className="error">{error}</p>}

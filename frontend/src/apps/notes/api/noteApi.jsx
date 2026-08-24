@@ -1,5 +1,5 @@
-const API_URL = '/api/todos/todos/';
-
+const API_URL = '/api/notes/notes/';
+    
 function createRequest(method, url, data = null) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -31,17 +31,17 @@ function createRequest(method, url, data = null) {
   });
 }
 
-export const todoApi = {
+export const noteApi = {
   getAll() {
     return createRequest('GET', API_URL);
   },
 
-  create(todo) {
-    return createRequest('POST', API_URL, todo);
+  create(note) {
+    return createRequest('POST', API_URL, note);
   },
 
-  update(id, todo) {
-    return createRequest('PATCH', `${API_URL}${id}/`, todo);
+  update(id, note) {
+    return createRequest('PATCH', `${API_URL}${id}/`, note);
   },
 
   delete(id) {

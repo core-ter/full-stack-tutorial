@@ -1,4 +1,4 @@
-const API_URL = '/api/categories/';
+const API_URL = '/api/todos/categories/';
     
 function createRequest(method, url, data = null) {
   return new Promise((resolve, reject) => {
