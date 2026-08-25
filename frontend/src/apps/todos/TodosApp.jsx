@@ -11,8 +11,10 @@ export class TodosApp extends Component {
     this.state = {
       todos: [],
       categories : [],
-      loading: false,
+      loadingTodos: false,
+      loadingCategories: false,
       error: null,
+      filter : 'all', // 'all' | 'completed' | 'pending'
     };
   }
 
@@ -22,21 +24,25 @@ export class TodosApp extends Component {
   }
 
   loadTodos = () => {
-    this.setState({ loading: true, error: null });
+    this.setState({ loadingTodos: true, error: null });
 
     todoApi
-      .getAll()
-      .then((todos) => this.setState({ todos, loading: false }))
-      .catch((error) => this.setState({ error, loading: false }));
+      .getAll(this.state.filter === 'all' ? null : this.state.filter)
+      .then((todos) => this.setState({ todos, loadingTodos: false }))
+      .catch((error) => this.setState({ error, loadingTodos: false }));
   };
 
   loadCategories = () => {
-    this.setState({ loading: true, error: null });
+    this.setState({ loadingCategories: true, error: null });
 
     categoryApi
       .getAll()
-      .then((categories) => this.setState({ categories, loading: false }))
-      .catch((error) => this.setState({ error, loading: false }));
+      .then((categories) => this.setState({ categories, loadingCategories: false }))
+      .catch((error) => this.setState({ error, loadingCategories: false }));
+  };
+
+  handleFilterChange = (filter) => {
+    this.setState({ filter }, this.loadTodos)
   };
 
   handleTodoAdded = (newTodo) => {
@@ -61,14 +67,27 @@ export class TodosApp extends Component {
   };
 
   render() {
-    const { todos, categories, loading, error } = this.state;
+    const { todos, categories, loadingTodos, loadingCategories, error } = this.state;
 
     return (
       <section className="todos-app">
         <h2>Todos</h2>
+
+        <div className="todo-filter">
+          {['all', 'pending', 'completed'].map((value) => (
+            <button
+              key={value}
+              className={this.state.filter === value ? 'active' : ''}
+              onClick={() => this.handleFilterChange(value)}
+            >
+              {value.charAt(0).toUpperCase() + value.slice(1)}
+            </button>
+          ))}
+        </div>
+
         <AddTodoForm onTodoAdded={this.handleTodoAdded} categories={categories} />
         {error && <p className="error">Error: {error}</p>}
-        <TodoList todos={todos} loading={loading} onTodoToggle={this.handleTodoToggle} />
+        <TodoList todos={todos} loading={loadingTodos} onTodoToggle={this.handleTodoToggle} />
       </section>
     );
   }

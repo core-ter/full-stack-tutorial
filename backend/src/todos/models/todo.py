@@ -1,5 +1,5 @@
 from django.db import models
-
+from todos.models.managers import TodoManager
 from mysite.models import BaseModel
 from todos.models.category import Category
 
@@ -12,3 +12,6 @@ class Todo(BaseModel):
         null=True,
         blank=True)
     completed = models.BooleanField(default=False)
+
+    objects = models.Manager()  # Default manager
+    todos = TodoManager()  # Custom manager
