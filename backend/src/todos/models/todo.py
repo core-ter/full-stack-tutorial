@@ -1,6 +1,6 @@
 from django.db import models
 
-from todos.models.models import BaseModel
+from mysite.models import BaseModel
 from todos.models.category import Category
 
 class Todo(BaseModel):

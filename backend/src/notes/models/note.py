@@ -1,6 +1,6 @@
 from django.db import models
 
-from .base import BaseModel
+from mysite.models import BaseModel
 
 class Note(BaseModel):
     title = models.CharField(max_length=200)
