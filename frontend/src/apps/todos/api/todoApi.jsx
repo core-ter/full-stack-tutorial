@@ -32,8 +32,9 @@ function createRequest(method, url, data = null) {
 }
 
 export const todoApi = {
-  getAll() {
-    return createRequest('GET', API_URL);
+  getAll(filterStatus) {
+    const url = filterStatus ? `${API_URL}?status=${filterStatus}` : API_URL;
+    return createRequest('GET', url);
   },
 
   create(todo) {

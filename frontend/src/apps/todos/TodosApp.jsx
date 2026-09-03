@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { AddTodoForm } from './AddTodoForm';
 import { TodoList } from './TodoList';
+import { PdfExportModal } from './PdfExportModal';
 import { todoApi } from './api/todoApi.jsx';
 import { categoryApi } from './api/categoryApi.jsx';
 import './styles/todos.css';
@@ -15,6 +16,7 @@ export class TodosApp extends Component {
       loadingCategories: false,
       error: null,
       filter : 'all', // 'all' | 'completed' | 'pending'
+      isExportModalOpen: false,
     };
   }
 
@@ -45,6 +47,14 @@ export class TodosApp extends Component {
     this.setState({ filter }, this.loadTodos)
   };
 
+  handleOpenExportModal = () => {
+    this.setState({ isExportModalOpen: true });
+  };
+
+  handleCloseExportModal = () => {
+    this.setState({ isExportModalOpen: false });
+  };
+
   handleTodoAdded = (newTodo) => {
     this.setState((prevState) => ({
       todos: [...prevState.todos, newTodo],
@@ -67,7 +77,7 @@ export class TodosApp extends Component {
   };
 
   render() {
-    const { todos, categories, loadingTodos, loadingCategories, error } = this.state;
+    const { todos, categories, loadingTodos,  error, isExportModalOpen } = this.state;
 
     return (
       <section className="todos-app">
@@ -85,9 +95,22 @@ export class TodosApp extends Component {
           ))}
         </div>
 
+        <div className="export-section">
+          <button className="todo-button" onClick={this.handleOpenExportModal}>
+            Export PDF
+          </button>
+        </div>
+
         <AddTodoForm onTodoAdded={this.handleTodoAdded} categories={categories} />
         {error && <p className="error">Error: {error}</p>}
         <TodoList todos={todos} loading={loadingTodos} onTodoToggle={this.handleTodoToggle} />
+
+        {isExportModalOpen && (
+          <PdfExportModal
+            initialFilter={this.state.filter}
+            onClose={this.handleCloseExportModal}
+          />
+        )}
       </section>
     );
   }

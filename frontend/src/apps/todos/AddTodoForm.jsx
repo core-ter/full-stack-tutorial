@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { todoApi } from './api/todoApi.jsx';
-import { categoryApi } from './api/categoryApi.jsx';
 
 export class AddTodoForm extends Component {
   constructor(props) {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { noteApi } from './api/noteApi.jsx';
-import { categoryApi } from './api/categoryApi.jsx';
 
 export class AddNoteForm extends Component {
   constructor(props) {
