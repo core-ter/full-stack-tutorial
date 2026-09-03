@@ -54,6 +54,8 @@ frontend/dist/
 # Testing
 coverage/
 *.lcov
+.coverage
+htmlcov/
 
 # --- Docker ---
 *.env.docker

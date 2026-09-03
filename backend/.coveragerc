@@ -1,0 +1,25 @@
+[run]
+source = src
+omit =
+    */migrations/*
+    */tests/*
+    */admin.py
+    */apps.py
+    src/manage.py
+    src/mysite/wsgi.py
+    src/mysite/asgi.py
+branch = True
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    class .*Meta.*
+show_missing = True
+skip_covered = False
+fail_under = 0
+
+[html]
+directory = htmlcov
